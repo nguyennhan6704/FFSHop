@@ -1,6 +1,6 @@
 import User from "../models/User";
-import { auth } from "../firebaseConfig";
-import { db } from "../firebaseConfig";
+import { auth } from "../../firebaseConfig";
+import { db } from "../../firebaseConfig";
 
 import {
     createUserWithEmailAndPassword,
@@ -8,6 +8,7 @@ import {
     sendEmailVerification,
     sendPasswordResetEmail, signOut
 } from "firebase/auth";
+
 import { doc, setDoc } from "firebase/firestore";
 
 class AuthViewModel {

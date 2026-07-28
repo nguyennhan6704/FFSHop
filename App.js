@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 
-import AuthScreen from "./views/AuthScreen";
+import AuthScreen from "./src/views/AuthScreen";
 
 export default function App() {
 
