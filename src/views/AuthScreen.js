@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, SafeAreaView, ScrollView, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import Checkbox from "expo-checkbox";
 import AuthViewModels from "../viewmodels/AuthViewModels";
 
