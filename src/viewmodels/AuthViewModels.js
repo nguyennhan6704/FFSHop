@@ -9,7 +9,7 @@ import {
     sendPasswordResetEmail, signOut
 } from "firebase/auth";
 
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 
 class AuthViewModel {
     async register(userData) {
@@ -31,7 +31,9 @@ class AuthViewModel {
 
                 gender: user.gender,
 
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
+
+                uid: user.uid
             })
 
             await sendEmailVerification(result.user);
@@ -95,6 +97,23 @@ class AuthViewModel {
 
     async logout() {
         return await signOut(auth);
+    }
+
+    async getCurrentUserData() {
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) return null;
+
+        const userDBRef = doc(db, "Users", currentUser.uid);
+
+        const userSnapshot = await getDoc(userDBRef);
+
+        if (userSnapshot.exists()) {
+            return {
+                uid: currentUser.uid,
+                ...userSnapshot.data(),
+            }
+        }
     }
 }
 

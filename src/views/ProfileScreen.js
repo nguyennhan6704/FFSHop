@@ -1,6 +1,17 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import AuthViewModels from "../viewmodels/AuthViewModels";
+import { useIsFocused } from "@react-navigation/native";
+import { useEffect } from "react";
 
 export default function ProfileScreen() {
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused) {
+
+        }
+    }, [isFocused])
+
     return (
         <View
             style={{
@@ -10,6 +21,10 @@ export default function ProfileScreen() {
             }}
         >
             <Text>Profile Screen</Text>
+            <TouchableOpacity style={{ padding: 20, backgroundColor: "red", borderTopLeftRadius: 20, borderBottomRightRadius: 20 }}
+                onPress={() => AuthViewModels.logout()}>
+                <Text>LogOut</Text>
+            </TouchableOpacity>
         </View>
     );
 }

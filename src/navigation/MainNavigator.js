@@ -2,9 +2,9 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text } from "react-native";
 
-import HomeScreen from "../views/HomeScreen";
 import CartScreen from "../views/CartScreen";
 import ProfileScreen from "../views/ProfileScreen";
+import HomeStack from "./HomeStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,27 +14,37 @@ export default function MainNavigator() {
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: true,
+                tabBarLabelStyle: { fontSize: 14 }
             }}
         >
             <Tab.Screen
-                name="Home"
-                component={HomeScreen}
+                name="Trang chủ"
+                component={HomeStack}
                 options={{
-                    tabBarIcon: () => <Text style={{ fontSize: 20 }}>🏠</Text>,
+                    tabBarIcon: () => <Text style={{ fontSize: 25 }}>🏠</Text>,
                 }}
             />
+
             <Tab.Screen
-                name="Cart"
+                name="Tìm kiếm"
+                component={HomeStack}
+                options={{
+                    tabBarIcon: () => <Text style={{ fontSize: 25 }}>🔍</Text>,
+                }}
+            />
+
+            <Tab.Screen
+                name="Giỏ hàng"
                 component={CartScreen}
                 options={{
-                    tabBarIcon: () => <Text style={{ fontSize: 20 }}>🛒</Text>,
+                    tabBarIcon: () => <Text style={{ fontSize: 25 }}>🛒</Text>,
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="Cá nhân"
                 component={ProfileScreen}
                 options={{
-                    tabBarIcon: () => <Text style={{ fontSize: 20 }}>👤</Text>,
+                    tabBarIcon: () => <Text style={{ fontSize: 25 }}>👤</Text>,
                 }}
             />
         </Tab.Navigator>

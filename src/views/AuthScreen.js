@@ -114,6 +114,12 @@ export default function AuthScreen() {
         }
     };
 
+    const clearInput = () => {
+        setEmail();
+        setPassword();
+        setRePassword();
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.container}
@@ -132,7 +138,7 @@ export default function AuthScreen() {
                         isForgot &&
                         <TouchableOpacity
                             style={styles.backButton}
-                            onPress={() => { setIsForgot(false); setEmail(""); }}>
+                            onPress={() => { setIsForgot(false), clearInput() }}>
                             <Text style={styles.textBack}>← Quay lại</Text>
                         </TouchableOpacity>
                     }
@@ -141,11 +147,11 @@ export default function AuthScreen() {
                     {
                         !isForgot &&
                         <View style={styles.tabContainer}>
-                            <TouchableOpacity style={[styles.tabButton, isLogin && styles.activeTabLogin]} onPress={() => setIsLogin(true)}>
+                            <TouchableOpacity style={[styles.tabButton, isLogin && styles.activeTabLogin]} onPress={() => [setIsLogin(true), clearInput()]}>
                                 <Text style={[styles.tabText, isLogin && styles.activeTabText]}>Đăng nhập</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={[styles.tabButton, !isLogin && styles.activeTabRegister]} onPress={() => setIsLogin(false)}>
+                            <TouchableOpacity style={[styles.tabButton, !isLogin && styles.activeTabRegister]} onPress={() => [setIsLogin(false), clearInput()]}>
                                 <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>Đăng ký</Text>
                             </TouchableOpacity>
                         </View>
@@ -234,7 +240,7 @@ export default function AuthScreen() {
                     {
                         isLogin && !isForgot &&
                         <TouchableOpacity
-                            onPress={() => [setIsForgot(true)]}>
+                            onPress={() => [setIsForgot(true), clearInput()]}>
                             <Text style={styles.forgotPassword}>
                                 Quên mật khẩu?
                             </Text>

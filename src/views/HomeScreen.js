@@ -1,596 +1,187 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-    View,
-    Text,
-    Image,
-    FlatList,
-    StyleSheet,
-    ActivityIndicator
-} from "react-native";
+import { Text, Image, View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Dimensions } from "react-native";
 
 import ProductViewModel from "../viewmodels/ProductViewModel";
 
+import AuthViewModels from "../viewmodels/AuthViewModels";
+import { Carousel } from "react-native-reanimated-carousel";
+import { useIsFocused } from "@react-navigation/native";
 
-export default function HomeScreen() {
+const { width } = Dimensions.get("window");
 
-    // =====================================================
-    // STATE
-    // =====================================================
+export default function HomeScreen({ navigation }) {
 
-    // Lưu danh sách Product lấy từ Firebase
-    const [products, setProducts] = useState([]);
+    const isFocused = useIsFocused();
 
-    // Kiểm tra trạng thái loading
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [popularProducts, setPopularProducts] = useState([]);
+    const [newsProducts, setNewsProducts] = useState([]);
+
+    const [userName, setUserName] = useState("Khách");
+    const [avatar, setAvatar] = useState("");
     const [loading, setLoading] = useState(true);
 
-
-    // =====================================================
-    // LOAD PRODUCTS
-    // =====================================================
-
-    const loadProducts = async () => {
-
+    const loadHomeData = async () => {
         try {
-
             setLoading(true);
 
-            const result =
-                await ProductViewModel.getNewProducts();
+            const userData = await AuthViewModels.getCurrentUserData();
+            if (userData && userData.username) {
+                setUserName(userData.username);
+            }
 
-            setProducts(result);
+            const [news, popular] = await Promise.all([
+                ProductViewModel.getNewProducts(),
+                ProductViewModel.getPopularProducts()
+            ]);
 
+            setPopularProducts(popular);
+            setNewsProducts(news);
+            setRelatedProducts(news);
         }
         catch (error) {
-
-            console.log(
-                "Load products error:",
-                error
-            );
-
+            console.log("Load home data error: ", error);
         }
         finally {
-
             setLoading(false);
         }
-    };
-
-
-    // =====================================================
-    // USE EFFECT
-    // =====================================================
+    }
 
     useEffect(() => {
+        if (isFocused) {
+            loadHomeData();
+        }
+    }, [isFocused]);
 
-        // Khi HomeScreen được mở lần đầu
-        // thì gọi loadProducts()
-        loadProducts();
-
-    }, []);
-
-
-    // =====================================================
-    // PRODUCT ITEM
-    // =====================================================
-
-    const productItem = ({ item }) => {
-
+    const bannerItem = ({ item }) => {
         return (
-
-            <View style={styles.productCard}>
-
+            <TouchableOpacity style={styles.bannerContainer} onPress={() => { navigation.navigate("ProductDetail", { productId: item.id }) }}>
                 <Image
-                    source={{
-                        uri: item.image
-                    }}
-                    style={styles.productImage}
+                    source={{ uri: item.image }}
+                    style={styles.bannerImage}
                 />
-
-                <Text style={styles.productName}>
-                    {item.name}
-                </Text>
-
-                <Text style={styles.productCategory}>
-                    {item.category}
-                </Text>
-
-                <Text style={styles.productPrice}>
-                    {item.finalPrice.toLocaleString()}đ
-                </Text>
-
-                {item.salePercent > 0 && (
-
-                    <Text style={styles.saleText}>
-                        Giảm {item.salePercent}%
-                    </Text>
-
-                )}
-
-                <Text style={styles.rating}>
-                    ⭐ {item.rating}
-                    {" - "}
-                    ({item.reviewsCount})
-                </Text>
-
-            </View>
-        );
-    };
-
-
-    // =====================================================
-    // LOADING
-    // =====================================================
-
-    if (loading) {
-
-        return (
-
-            <View style={styles.loadingContainer}>
-
-                <ActivityIndicator
-                    size="large"
-                />
-
-                <Text style={styles.loadingText}>
-                    Đang tải sản phẩm...
-                </Text>
-
-            </View>
+                <View style={styles.bannerOverlay}>
+                    <Text style={styles.bannerTitle} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
+                    <Text style={styles.bannerPrice} numberOfLines={1} ellipsizeMode="tail">{item.finalPrice.toLocaleString()}đ</Text>
+                </View>
+            </TouchableOpacity>
         );
     }
 
-
-    // =====================================================
-    // HOME UI
-    // =====================================================
-
     return (
+        <SafeAreaView style={styles.container}>
+            <ScrollView>
+                {/* Start Header */}
+                <View style={styles.header}>
+                    {avatar && <Image style={styles.userAvatar}
+                        source={{ uri: avatar }} />}
+                    {!avatar && <Image style={styles.userAvatar}
+                        source={{ uri: "https://th.bing.com/th/id/OIP.4E7iaWZGvMGSfu91X-zJUQHaHa?w=201&h=200&c=7&r=0&o=7&pid=1.7&rm=3" }} />}
+                    <Text style={styles.greeting}>Xin chào, </Text>
+                    <Text style={styles.name}>{userName}</Text>
+                </View>
+                <View style={styles.divider} />
+                {/* End Header */}
 
-        <View style={styles.container}>
+                {/* Start ImageSlider */}
 
-            {/* ================= HEADER ================= */}
-
-            <View style={styles.header}>
-
-                <View>
-
-                    <Text style={styles.greeting}>
-                        Chào mừng bạn 👋
-                    </Text>
-
-                    <Text style={styles.title}>
-                        Coffe Oceaneko
-                    </Text>
-
+                <View style={styles.carouselContainer}>
+                    <Carousel
+                        data={newsProducts}
+                        autoplay
+                        autoplayInterval={5000}
+                        loop
+                        renderItem={bannerItem} />
                 </View>
 
+                {/* End ImageSlider */}
 
-                {/* Notification */}
-
-                <View style={styles.notificationButton}>
-
-                    <Text style={styles.notificationIcon}>
-                        🔔
-                    </Text>
-
-                </View>
-
-            </View>
-
-
-            {/* ================= SUBTITLE ================= */}
-
-            <Text style={styles.subtitle}>
-                Khám phá những món cà phê yêu thích
-            </Text>
-
-
-            {/* ================= BANNER ================= */}
-
-            <View style={styles.banner}>
-
-                <View style={styles.bannerContent}>
-
-                    <Text style={styles.bannerTitle}>
-                        Coffee Time ☕
-                    </Text>
-
-                    <Text style={styles.bannerSubtitle}>
-                        Thưởng thức ly cà phê tuyệt vời
-                    </Text>
-
-                    <View style={styles.bannerButton}>
-
-                        <Text style={styles.bannerButtonText}>
-                            Khám phá ngay
-                        </Text>
-
-                    </View>
-
-                </View>
-
-            </View>
-
-
-            {/* ================= PRODUCT SECTION ================= */}
-
-            <View style={styles.sectionHeader}>
-
-                <Text style={styles.sectionTitle}>
-                    Sản phẩm mới
-                </Text>
-
-                <Text style={styles.seeAll}>
-                    Xem tất cả
-                </Text>
-
-            </View>
-
-
-            {/* ================= PRODUCT LIST ================= */}
-
-            <FlatList
-                data={products}
-
-                renderItem={productItem}
-
-                keyExtractor={(item) => item.id}
-
-                ListEmptyComponent={
-
-                    <Text style={styles.emptyText}>
-                        Chưa có sản phẩm nào
-                    </Text>
-
-                }
-
-                contentContainerStyle={
-                    styles.listContainer
-                }
-
-                showsVerticalScrollIndicator={false}
-            />
-
-        </View>
-    );
+                {/* Start Rating */}
+            </ScrollView>
+        </SafeAreaView>
+    )
 }
 
-
-// =====================================================
-// STYLE
-// =====================================================
-//
-// QUAN TRỌNG:
-// styles nằm NGOÀI HomeScreen()
-// =====================================================
-
 const styles = StyleSheet.create({
-
-    // =====================================================
-    // CONTAINER
-    // =====================================================
-
     container: {
-        flex: 1,
         backgroundColor: "#EDE0CF",
-        paddingTop: 20
+        flex: 1,
+        paddingHorizontal: 20
     },
 
 
-    // =====================================================
-    // HEADER
-    // =====================================================
-
+    //start Header
     header: {
+        fontSize: 16,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-
-        paddingHorizontal: 20,
+        marginTop: 10,
+        padding: 10,
     },
 
     greeting: {
-        fontSize: 14,
+        fontSize: 18,
         color: "#6A4731",
-        marginBottom: 3,
     },
 
-    title: {
-        fontSize: 26,
+    name: {
+        fontSize: 20,
         fontWeight: "bold",
         color: "#3B210A",
     },
 
+    userAvatar: {
+        width: 40,
+        height: 40,
+        marginRight: 10,
+        borderRadius: 30,
+        borderWidth: 2,
+        borderColor: "#9C7055"
+    },
 
-    // =====================================================
-    // NOTIFICATION
-    // =====================================================
-
-    notificationButton: {
-        width: 45,
-        height: 45,
-
-        borderRadius: 23,
-
+    divider: {
+        height: 1,
         backgroundColor: "#9C7055",
+    },
+    //end Header
 
-        justifyContent: "center",
-        alignItems: "center",
-
-        elevation: 4,
+    //start Image Slider
+    carouselContainer: {
+        height: 180,
+        marginTop: 20
     },
 
-    notificationIcon: {
-        fontSize: 20,
-    },
-
-
-    // =====================================================
-    // SUBTITLE
-    // =====================================================
-
-    subtitle: {
-        marginHorizontal: 20,
-        marginTop: 6,
-
-        fontSize: 14,
-
-        color: "#6A4731",
-    },
-
-
-    // =====================================================
-    // BANNER
-    // =====================================================
-
-    banner: {
-        marginHorizontal: 20,
-        marginTop: 20,
-
-        height: 165,
-
+    bannerContainer: {
+        width: width - 40,
+        height: 180,
         borderRadius: 20,
-
-        backgroundColor: "#9C7055",
-
         overflow: "hidden",
-
-        elevation: 5,
     },
 
-    bannerContent: {
-        flex: 1,
+    bannerImage: {
+        width: "100%",
+        height: "100%"
+    },
 
-        padding: 20,
-
-        justifyContent: "center",
+    bannerOverlay: {
+        position: "absolute",
+        left: 15,
+        bottom: 15
     },
 
     bannerTitle: {
-        fontSize: 25,
-
+        color: "#FFFFFF",
+        fontSize: 22,
         fontWeight: "bold",
-
-        color: "#EDE0CF",
     },
 
-    bannerSubtitle: {
-        marginTop: 6,
-
-        fontSize: 14,
-
-        color: "#E0C0A9",
-
-        maxWidth: "70%",
-    },
-
-    bannerButton: {
-        marginTop: 15,
-
-        alignSelf: "flex-start",
-
-        paddingHorizontal: 15,
-        paddingVertical: 8,
-
-        borderRadius: 20,
-
-        backgroundColor: "#EDE0CF",
-    },
-
-    bannerButtonText: {
-        fontSize: 12,
-
-        fontWeight: "bold",
-
-        color: "#3B210A",
-    },
-
-
-    // =====================================================
-    // SECTION HEADER
-    // =====================================================
-
-    sectionHeader: {
-        flexDirection: "row",
-
-        justifyContent: "space-between",
-
-        alignItems: "center",
-
-        marginHorizontal: 20,
-
-        marginTop: 25,
-
-        marginBottom: 12,
-    },
-
-    sectionTitle: {
-        fontSize: 20,
-
-        fontWeight: "bold",
-
-        color: "#3B210A",
-    },
-
-    seeAll: {
-        fontSize: 13,
-
-        fontWeight: "600",
-
-        color: "#6A4731",
-    },
-
-
-    // =====================================================
-    // PRODUCT LIST
-    // =====================================================
-
-    listContainer: {
-        paddingHorizontal: 20,
-
-        paddingBottom: 30,
-    },
-
-
-    // =====================================================
-    // PRODUCT CARD
-    // =====================================================
-
-    productCard: {
-        marginBottom: 18,
-
-        padding: 12,
-
-        borderRadius: 18,
-
-        backgroundColor: "#9C7055",
-
-        elevation: 5,
-    },
-
-
-    // =====================================================
-    // PRODUCT IMAGE
-    // =====================================================
-
-    productImage: {
-        width: "100%",
-
-        height: 190,
-
-        borderRadius: 14,
-
-        backgroundColor: "#E0C0A9",
-    },
-
-
-    // =====================================================
-    // PRODUCT NAME
-    // =====================================================
-
-    productName: {
-        marginTop: 11,
-
-        fontSize: 18,
-
-        fontWeight: "bold",
-
-        color: "#EDE0CF",
-    },
-
-
-    // =====================================================
-    // PRODUCT CATEGORY
-    // =====================================================
-
-    productCategory: {
-        marginTop: 4,
-
-        fontSize: 13,
-
-        color: "#E0C0A9",
-    },
-
-
-    // =====================================================
-    // PRICE
-    // =====================================================
-
-    productPrice: {
-        marginTop: 8,
-
-        fontSize: 17,
-
-        fontWeight: "bold",
-
-        color: "#EDE0CF",
-    },
-
-
-    // =====================================================
-    // SALE
-    // =====================================================
-
-    saleText: {
-        marginTop: 4,
-
-        fontSize: 13,
-
-        fontWeight: "bold",
-
-        color: "#E0C0A9",
-    },
-
-
-    // =====================================================
-    // RATING
-    // =====================================================
-
-    rating: {
+    bannerPrice: {
+        color: "#FFFFFF",
+        fontSize: 16,
         marginTop: 5,
-
-        fontSize: 13,
-
-        color: "#EDE0CF",
     },
-
-
-    // =====================================================
-    // LOADING
-    // =====================================================
-
-    loadingContainer: {
-        flex: 1,
-
-        justifyContent: "center",
-
-        alignItems: "center",
-
-        backgroundColor: "#EDE0CF",
-    },
-
-    loadingText: {
-        marginTop: 10,
-
-        fontSize: 15,
-
-        color: "#3B210A",
-    },
-
-
-    // =====================================================
-    // EMPTY
-    // =====================================================
-
-    emptyText: {
-        marginTop: 30,
-
-        textAlign: "center",
-
-        fontSize: 15,
-
-        color: "#6A4731",
-    },
-
-});
+    //end Image Slider
+})
