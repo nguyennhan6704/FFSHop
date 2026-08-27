@@ -6,6 +6,7 @@ import {
     Image,
     TouchableOpacity,
     FlatList,
+    ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartViewModels from "../viewmodels/CartViewModels";
@@ -137,7 +138,12 @@ export default function CartScreen() {
         return (
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.centerContainer}>
-                    <Text>Đang tải giỏ hàng...</Text>
+                    <ActivityIndicator
+                        size="large"
+                        color="#3B210A" />
+                    <Text style={styles.loadingText}>
+                        Đang tải sản phẩm...
+                    </Text>
                 </View>
             </SafeAreaView>
         );
@@ -355,4 +361,16 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
 
+    //Loading
+    centerContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#EDE0CF",
+    },
+
+    loadingText: {
+        marginTop: 10,
+        color: "#3B210A",
+    },
 });

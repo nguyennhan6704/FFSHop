@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, ScrollView } from "react-native";
 import Checkbox from "expo-checkbox";
 import AuthViewModels from "../viewmodels/AuthViewModels";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthScreen() {
     const [isLogin, setIsLogin] = useState(true);

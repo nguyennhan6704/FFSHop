@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Text, Image, View, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, TextInput } from "react-native";
+import { Text, Image, View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions } from "react-native";
 
@@ -58,7 +58,8 @@ export default function HomeScreen({ navigation }) {
 
     const bannerItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.bannerContainer} onPress={() => { navigation.navigate("ProductDetail", { productId: item.id }) }}>
+            <TouchableOpacity style={styles.bannerContainer}
+                onPress={() => { navigation.navigate("ProductDetail", { productId: item.id }) }}>
                 <Image
                     source={{ uri: item.image }}
                     style={styles.bannerImage}

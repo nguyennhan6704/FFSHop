@@ -1,25 +1,34 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text } from "react-native";
 
 import CartScreen from "../views/CartScreen";
 import ProfileScreen from "../views/ProfileScreen";
-import HomeStack from "./HomeStack";
+import SearchScreen from "../views/SearchScreen";
+import HomeScreen from "../views/HomeScreen";
+import ProductDetailScreen from "../views/ProductDetailScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-export default function MainNavigator() {
+function MainTabs() {
     return (
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: true,
-                tabBarLabelStyle: { fontSize: 14 }
+                tabBarLabelStyle: { fontSize: 14 },
+                tabBarStyle: {
+                    backgroundColor: "#EDE0CF",
+                },
+                tabBarActiveTintColor: "#3B210A",
+                tabBarInactiveTintColor: "#9C7055",
             }}
         >
             <Tab.Screen
                 name="Trang chủ"
-                component={HomeStack}
+                component={HomeScreen}
                 options={{
                     tabBarIcon: () => <Text style={{ fontSize: 25 }}>🏠</Text>,
                 }}
@@ -27,7 +36,7 @@ export default function MainNavigator() {
 
             <Tab.Screen
                 name="Tìm kiếm"
-                component={HomeStack}
+                component={SearchScreen}
                 options={{
                     tabBarIcon: () => <Text style={{ fontSize: 25 }}>🔍</Text>,
                 }}
@@ -49,4 +58,36 @@ export default function MainNavigator() {
             />
         </Tab.Navigator>
     );
+}
+
+export default function MainNavigator() {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Main"
+                component={MainTabs}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="ProductDetail"
+                component={ProductDetailScreen}
+                options={{
+                    title: "Chi tiết sản phẩm"
+                    ,
+                    headerStyle: {
+                        backgroundColor: "#EDE0CF",
+                    },
+
+                    // Màu chữ tiêu đề
+                    headerTintColor: "#3B210A",
+
+                    // Kiểu chữ tiêu đề
+                    headerTitleStyle: {
+                        fontWeight: "bold",
+                    },
+                }}
+            />
+        </Stack.Navigator>
+    )
 }
