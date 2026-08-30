@@ -7,7 +7,7 @@ export default class ProductViewModel {
         const productsRef = collection(db, 'Products');
         //chọn collection trên firestore
 
-        const q = query(productsRef, orderBy('createdAt', 'desc'), limit(10));
+        const q = query(productsRef, orderBy('createdAt', 'desc'), limit(4));
         //giới hạn lấy ở collection trên là 10
 
         const snapshot = await getDocs(q);
@@ -33,7 +33,7 @@ export default class ProductViewModel {
     static async getPopularProducts() {
         const productsRef = collection(db, 'Products');
 
-        const q = query(productsRef, orderBy('rating', 'desc'), limit(10));
+        const q = query(productsRef, orderBy('rating', 'desc'), limit(4));
 
         const snapshot = await getDocs(q);
 
