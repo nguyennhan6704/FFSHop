@@ -49,6 +49,7 @@ export default function ProductDetailScreen({ route }) {
 
     const handleAddToCart = async () => {
         try {
+            setLoading(true);
             await CartViewModels.addToCart(auth.currentUser.uid, product, quantity);
 
             Alert.alert("Thành công", "Đã thêm sản phẩm vào giỏ hàng thành công")
@@ -63,6 +64,7 @@ export default function ProductDetailScreen({ route }) {
         }
         finally {
             setQuantity(1);
+            setLoading(false);
         }
     }
 

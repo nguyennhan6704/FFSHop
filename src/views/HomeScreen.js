@@ -33,6 +33,10 @@ export default function HomeScreen({ navigation }) {
                 setUserName(userData.username);
             }
 
+            if (userData && userData.avatar) {
+                setAvatar(userData.avatar);
+            }
+
             const [news, popular] = await Promise.all([
                 ProductViewModel.getNewProducts(),
                 ProductViewModel.getPopularProducts()

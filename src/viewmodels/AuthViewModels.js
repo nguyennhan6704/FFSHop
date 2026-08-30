@@ -9,7 +9,9 @@ import {
     sendPasswordResetEmail, signOut
 } from "firebase/auth";
 
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { add } from "firebase/firestore/pipelines";
+import * as CloudinaryServices from "../services/CloudinaryServices";
 
 class AuthViewModel {
     async register(userData) {
@@ -114,6 +116,24 @@ class AuthViewModel {
                 ...userSnapshot.data(),
             }
         }
+    }
+
+    async updateUserInformation(userId, userName, phoneNo, address, gender, avatar, status) {
+        const userDBRef = doc(db, "Users", userId);
+
+        let avatarUrl = avatar;
+
+        if (status) {
+            avatarUrl = await CloudinaryServices.uploadToCloudinary(avatar, userName);
+        }
+
+        await updateDoc(userDBRef, {
+            username: userName,
+            phoneNo: phoneNo,
+            address: address,
+            gender: gender,
+            avatar: avatarUrl
+        })
     }
 }
 

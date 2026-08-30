@@ -8,6 +8,10 @@ import ProfileScreen from "../views/ProfileScreen";
 import SearchScreen from "../views/SearchScreen";
 import HomeScreen from "../views/HomeScreen";
 import ProductDetailScreen from "../views/ProductDetailScreen";
+import InformationScreen from "../views/InformationScreen"
+import CheckoutScreen from "../views/CheckoutScreen";
+import OrderScreen from "../views/OrderScreen";
+import OrderDetailScreen from "../views/OrderDetailScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -87,6 +91,30 @@ export default function MainNavigator() {
                         fontWeight: "bold",
                     },
                 }}
+            />
+
+            <Stack.Screen
+                name="InformationScreen"
+                component={InformationScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="CheckoutScreen"
+                component={CheckoutScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="OrderScreen"
+                component={OrderScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="OrderDetailScreen"
+                component={OrderDetailScreen}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     )

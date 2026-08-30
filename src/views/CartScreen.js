@@ -7,13 +7,14 @@ import {
     TouchableOpacity,
     FlatList,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartViewModels from "../viewmodels/CartViewModels";
 import { auth } from "../../firebaseConfig";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function CartScreen() {
+export default function CartScreen({ navigation }) {
 
     const isFocused = useIsFocused();
 
@@ -122,8 +123,10 @@ export default function CartScreen() {
 
                 {/* Xóa */}
                 <TouchableOpacity style={styles.deleteButton} onPress={async () => {
+                    setLoading(true);
                     await CartViewModels.deleteFromCart(auth.currentUser.uid, item.id);
                     setCart(cart.filter(cartItem => cartItem.id !== item.id));
+                    setLoading(false);
                 }}>
                     <Text style={styles.deleteText}>
                         X
@@ -181,7 +184,15 @@ export default function CartScreen() {
 
                 </View>
 
-                <TouchableOpacity style={styles.checkoutButton}>
+                <TouchableOpacity style={styles.checkoutButton}
+                    onPress={() => {
+                        if (cart.length == 0) {
+                            Alert.alert("Lỗi", "Không có sản phẩm trong giỏ hàng")
+                        }
+                        else {
+                            navigation.navigate("CheckoutScreen", { cart: cart });
+                        }
+                    }}>
 
                     <Text style={styles.checkoutText}>
                         Thanh toán

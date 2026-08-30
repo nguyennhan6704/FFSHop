@@ -14,8 +14,9 @@ import AuthViewModels from "../viewmodels/AuthViewModels";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useIsFocused } from "@react-navigation/native";
+import { auth } from "../../firebaseConfig";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
 
     const isFocused = useIsFocused();
 
@@ -87,7 +88,10 @@ export default function ProfileScreen() {
 
             <View style={styles.menuContainer}>
 
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem}
+                    onPress={() => {
+                        navigation.navigate("InformationScreen", { userId: user.uid })
+                    }}>
 
                     <Text style={styles.icon}>
                         👤
@@ -95,6 +99,27 @@ export default function ProfileScreen() {
 
                     <Text style={styles.menuText}>
                         Thông tin cá nhân
+                    </Text>
+
+                    <Text style={styles.arrow}>
+                        ›
+                    </Text>
+
+                </TouchableOpacity>
+
+                <View style={styles.divider} />
+
+                <TouchableOpacity style={styles.menuItem}
+                    onPress={() => {
+                        navigation.navigate("OrderScreen");
+                    }}>
+
+                    <Text style={styles.icon}>
+                        🛒
+                    </Text>
+
+                    <Text style={styles.menuText}>
+                        Đơn hàng của tôi
                     </Text>
 
                     <Text style={styles.arrow}>
@@ -292,5 +317,10 @@ const styles = StyleSheet.create({
     loadingText: {
         marginTop: 10,
         color: "#3B210A",
+    },
+
+    safeArea: {
+        flex: 1,
+        backgroundColor: "#EDE0CF",
     },
 });

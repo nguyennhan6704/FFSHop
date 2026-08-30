@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import Checkbox from "expo-checkbox";
 import AuthViewModels from "../viewmodels/AuthViewModels";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -52,8 +52,6 @@ export default function AuthScreen() {
             setLoading(true);
             await AuthViewModels.login(email, password);
             Alert.alert("Thành công", "Đăng nhập thành công");
-            setEmail("");
-            setPassword("");
         }
         catch (error) {
             Alert.alert(
@@ -116,9 +114,24 @@ export default function AuthScreen() {
     };
 
     const clearInput = () => {
-        setEmail();
-        setPassword();
-        setRePassword();
+        setEmail("");
+        setPassword("");
+        setRePassword("");
+    }
+
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.safeArea}>
+                <View style={styles.centerContainer}>
+                    <ActivityIndicator
+                        size="large"
+                        color="#3B210A" />
+                    <Text style={styles.loadingText}>
+                        Đang xử lý...
+                    </Text>
+                </View>
+            </SafeAreaView>
+        );
     }
 
     return (
@@ -407,5 +420,22 @@ const styles = StyleSheet.create({
         fontWeight: 600,
         textAlign: "center",
         fontSize: 18,
+    },
+
+    centerContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#EDE0CF",
+    },
+
+    loadingText: {
+        marginTop: 10,
+        color: "#3B210A",
+    },
+
+    safeArea: {
+        flex: 1,
+        backgroundColor: "#EDE0CF",
     },
 })

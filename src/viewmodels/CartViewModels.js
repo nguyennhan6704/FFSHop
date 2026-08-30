@@ -1,4 +1,4 @@
-import { collection, updateDoc, doc, setDoc, deleteDoc, getDoc, getDocs, docs } from "firebase/firestore";
+import { collection, updateDoc, doc, setDoc, deleteDoc, getDoc, getDocs, docs, increment } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 
 export default class CartViewModels {
@@ -8,8 +8,7 @@ export default class CartViewModels {
         const cartItemsSnapshot = await getDoc(cartRef);
 
         if (cartItemsSnapshot.exists()) {
-            const oldQuantity = cartItemsSnapshot.data().quantity;
-            await updateDoc(cartRef, { quantity: oldQuantity + quantity, salePercent: product.salePercent });
+            await updateDoc(cartRef, { quantity: increment(quantity), salePercent: product.salePercent });
         }
         else {
             await setDoc(cartRef, {
@@ -39,19 +38,25 @@ export default class CartViewModels {
         await deleteDoc(cartRef);
     }
 
+    static async deleteAllCart(userId) {
+        const cartRef = collection(db, "Cart", userId, "items");
+
+        const cartItems = await getDocs(cartRef);
+
+        for (let items of cartItems.docs) {
+            await deleteDoc(items.ref);
+        }
+    }
+
     static async decreaseQuantity(userId, productId) {
         const cartRef = doc(db, "Cart", userId, "items", productId);
 
-        const oldQuantity = (await getDoc(cartRef)).data().quantity;
-
-        await updateDoc(cartRef, { quantity: oldQuantity - 1 });
+        await updateDoc(cartRef, { quantity: increment(-1) });
     }
 
     static async increaseQuantity(userId, productId) {
         const cartRef = doc(db, "Cart", userId, "items", productId);
 
-        const oldQuantity = (await getDoc(cartRef)).data().quantity;
-
-        await updateDoc(cartRef, { quantity: oldQuantity + 1 });
+        await updateDoc(cartRef, { quantity: increment(1) });
     }
 }
