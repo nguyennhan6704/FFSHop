@@ -35,10 +35,12 @@ class AuthViewModel {
 
                 createdAt: user.createdAt,
 
-                uid: user.uid
+                uid: result.user.uid
             })
 
             await sendEmailVerification(result.user);
+
+            await signOut(auth);
 
             return result;
         }

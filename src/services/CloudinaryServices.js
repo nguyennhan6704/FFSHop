@@ -25,8 +25,13 @@ export const uploadToCloudinary = async (imageUri, userName) => {
 
         const data = await response.json();
 
+        if (!response.ok) {
+            throw new Error(data.error?.message || "Upload ảnh thất bại.");
+        }
+
         return data.secure_url;
     }
     catch (error) {
+        console.log(error);
     }
 }
