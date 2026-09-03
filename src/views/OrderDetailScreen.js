@@ -11,13 +11,12 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import OrderViewModels from "../viewmodels/OrderViewModels";
 
 
 export default function OrderDetailScreen({ route, navigation }) {
 
     const { order } = route.params;
-
-    const [loading, setLoading] = useState(true);
 
     const renderItem = ({ item }) => {
 
@@ -92,7 +91,7 @@ export default function OrderDetailScreen({ route, navigation }) {
 
                     <Text style={styles.infoText}>
                         Ngày đặt: {
-                            order.createdAt.toDate().toLocaleString()
+                            order.createdAt?.toDate().toLocaleString()
                         }
                     </Text>
 
@@ -193,7 +192,11 @@ export default function OrderDetailScreen({ route, navigation }) {
                     order.status === "Đang xử lý"
                         ? styles.cancelButton
                         : styles.disabledButton}
-                    disabled={order.status === "Đã hủy"}>
+                    disabled={order.status !== "Đang xử lý"}
+                    onPress={async () => {
+                        await OrderViewModels.updateStatus(order.id, "Đã hủy");
+                        order.status = "Đã hủy"
+                    }}>
 
                     <Text style={styles.cancelText}>
                         {order.status === "Đang xử lý"

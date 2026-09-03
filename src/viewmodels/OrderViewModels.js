@@ -1,5 +1,5 @@
 import { db } from "../../firebaseConfig";
-import { collection, addDoc, serverTimestamp, query, orderBy, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, orderBy, where, getDocs, updateDoc, doc } from "firebase/firestore";
 
 export default class OrderViewModels {
     static async createOrder(userId, userName, phoneNo, address, note, cart, totalPrice, shippingFee, total) {
@@ -32,5 +32,13 @@ export default class OrderViewModels {
             id: doc.id,
             ...doc.data()
         }))
+    }
+
+    static async updateStatus(orderId, status) {
+        const orderRef = doc(db, "Orders", orderId);
+
+        await updateDoc(orderRef, {
+            status: status
+        })
     }
 }

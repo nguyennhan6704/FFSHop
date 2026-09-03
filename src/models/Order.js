@@ -2,6 +2,8 @@ export default class Order {
     constructor(
         id,
         userId,
+        userName,
+        phoneNo,
         address,
         note,
         items,
@@ -14,6 +16,8 @@ export default class Order {
     ) {
         this.id = id;
         this.userId = userId;
+        this.userName = userName;
+        this.phoneNo = phoneNo;
         this.address = address;
         this.note = note;
         this.items = items;

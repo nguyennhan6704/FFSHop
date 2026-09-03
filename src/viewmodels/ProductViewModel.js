@@ -69,11 +69,11 @@ export default class ProductViewModel {
         })
     }
 
-    static async searchProducts(keyword) {
-        const allProducts = await this.getAllProducts();
+    static searchProducts(products, keyword) {
+        if (!keyword || keyword.trim() === "") return products;
 
-        if (!keyword || keyword.trim() === "") return allProducts;
+        const value = keyword.toLowerCase().trim();
 
-        return allProducts.filter(product => product.name && product.name.toLowerCase().includes(keyword.toLowerCase().trim()));
+        return products.filter(product => product.name && product.name.toLowerCase().includes(value));
     }
 }

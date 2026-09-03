@@ -69,7 +69,7 @@ export default function OrderScreen({ navigation }) {
                 </View>
 
                 <Text style={styles.date}>
-                    {item.createdAt.toDate().toLocaleString()}
+                    {item.createdAt?.toDate().toLocaleString()}
                 </Text>
 
                 <View style={styles.divider} />

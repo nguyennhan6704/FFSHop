@@ -11,6 +11,7 @@ export default function SearchScreen({ navigation }) {
 
     const isFocused = useIsFocused();
 
+    const [allProducts, setAllProducts] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -19,9 +20,10 @@ export default function SearchScreen({ navigation }) {
             setLoading(true);
             const data = await ProductViewModel.getAllProducts();
             setProducts(data);
+            setAllProducts(data);
         }
         catch (error) {
-
+            console.log(error);
         }
         finally {
             setLoading(false);
@@ -74,6 +76,12 @@ export default function SearchScreen({ navigation }) {
         )
     }
 
+    const handleSearch = (keyword) => {
+        const result = ProductViewModel.searchProducts(allProducts, keyword);
+
+        setProducts(result);
+    }
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.searchContainer}>
@@ -83,10 +91,7 @@ export default function SearchScreen({ navigation }) {
                 <TextInput placeholder="Tìm món bạn muốn"
                     placeholderTextColor="#9C7055"
                     style={styles.searchInput}
-                    onChangeText={async (value) => {
-                        const data = await ProductViewModel.searchProducts(value);
-                        setProducts(data);
-                    }} />
+                    onChangeText={handleSearch} />
             </View>
             <Text style={styles.resultTitle}>
                 Kết quả tìm kiếm

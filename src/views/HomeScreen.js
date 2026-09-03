@@ -17,7 +17,7 @@ import ProductViewModel from "../viewmodels/ProductViewModel";
 import AuthViewModels from "../viewmodels/AuthViewModels";
 import { Carousel } from "react-native-reanimated-carousel";
 import { useIsFocused } from "@react-navigation/native";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -287,6 +287,7 @@ const styles = StyleSheet.create({
     //start Image Slider
 
     carouselContainer: {
+        width: width,
         height: 180,
         marginTop: 20
     },
